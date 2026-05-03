@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { CadastroTela } from './screens/CadastrarCliente/CadastroTela';
+import { CadastroTela } from './screens/AgendarConsulta/CadastroTela';
 
 export default function App() {
   return (
