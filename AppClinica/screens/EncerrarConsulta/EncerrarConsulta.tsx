@@ -49,8 +49,13 @@ const procedimentosOpcoes = [
     'Aplicação de injeção',
 ];
 
-export function EncerramentoConsultaTela() {
-    const styles = getStyle();
+type EncerramentoConsultaTelaProps = {
+    darkMode?: boolean;
+    onVoltar?: () => void;
+};
+
+export function EncerramentoConsultaTela({ darkMode = false, onVoltar }: EncerramentoConsultaTelaProps) {
+    const styles = getStyle(darkMode);
 
     const [consultaSelecionada, setConsultaSelecionada] = useState<Consulta | null>(null);
     const [formaPagamento, setFormaPagamento] = useState<FormaPagamento>('');
@@ -105,6 +110,12 @@ export function EncerramentoConsultaTela() {
                 contentContainerStyle={styles.scrollContent}
                 keyboardShouldPersistTaps="handled"
             >
+                {onVoltar && (
+                    <TouchableOpacity style={styles.modalCancel} onPress={onVoltar}>
+                        <Text style={styles.modalCancelText}>Voltar</Text>
+                    </TouchableOpacity>
+                )}
+
                 <Text style={styles.titulo}>Encerramento de Consulta</Text>
                 <Text style={styles.subtitulo}>
                     {new Date().toLocaleDateString('pt-BR', {

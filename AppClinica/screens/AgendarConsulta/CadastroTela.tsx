@@ -10,6 +10,7 @@ import { getStyle } from "./CadastroTelaStyle";
 const clientes = ['', 'Felipe', 'Arthur', 'Pietro'];
 const medicos = ['', 'Dr. Silva', 'Dr. Costa', 'Dra. Lima'];
 const especialidades = ['', 'Cardiologia', 'Ortopedia', 'Clínica Geral'];
+const opcaoCadastrarCliente = '__cadastro_cliente__';
 
 const horarios = [
     '7:00 - 7:30', '7:30 - 8:00', '8:00 - 8:30', '8:30 - 9:00',
@@ -18,29 +19,15 @@ const horarios = [
 
 const nomesDias = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'];
 
-function parseDataBR(valor: string): Date | null {
-    const match = valor.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-    if (!match) return null;
-
-    const dia = Number(match[1]);
-    const mes = Number(match[2]) - 1;
-    const ano = Number(match[3]);
-    const data = new Date(ano, mes, dia);
-
-    if (
-        data.getFullYear() !== ano ||
-        data.getMonth() !== mes ||
-        data.getDate() !== dia
-    ) {
-        return null;
-    }
-
-    return new Date(ano, mes, dia, 0, 0, 0, 0);
-}
-
 function addDias(data: Date, dias: number): Date {
     const nova = new Date(data);
     nova.setDate(nova.getDate() + dias);
+    return nova;
+}
+
+function addMeses(data: Date, meses: number): Date {
+    const nova = new Date(data);
+    nova.setMonth(nova.getMonth() + meses);
     return nova;
 }
 
@@ -48,45 +35,66 @@ function formatDataBR(data: Date): string {
     return data.toLocaleDateString('pt-BR');
 }
 
-function gerarDisponibilidade(chave: string): boolean {
+type StatusHorario = 'L' | 'C' | 'M' | 'X' | 'B';
+
+function gerarStatusHorario(chave: string): StatusHorario {
     let hash = 0;
     for (let i = 0; i < chave.length; i += 1) {
         hash = (hash * 31 + chave.charCodeAt(i)) % 100000;
     }
-    return hash % 3 !== 0;
+
+    const bucket = hash % 10;
+    if (bucket <= 3) return 'L';
+    if (bucket <= 5) return 'C';
+    if (bucket === 6) return 'M';
+    if (bucket <= 8) return 'X';
+    return 'B';
 }
 
-export function CadastroTela() {
-    const styles = getStyle();
+type CadastroTelaProps = {
+    darkMode?: boolean;
+    onVoltar?: () => void;
+    onConfirmar?: () => void;
+    onAbrirCadastroCliente?: () => void;
+};
+
+export function CadastroTela({ darkMode = false, onVoltar, onConfirmar, onAbrirCadastroCliente }: CadastroTelaProps) {
+    const styles = getStyle(darkMode);
 
     const [cliente, setCliente] = useState('');
     const [telefone, setTelefone] = useState('');
     const [endereco, setEndereco] = useState('');
     const [medico, setMedico] = useState('');
     const [especialidade, setEspecialidade] = useState('');
-    const [periodoInicio, setPeriodoInicio] = useState('');
-    const [periodoFim, setPeriodoFim] = useState('');
     const [horarioSelecionado, setHorarioSelecionado] = useState<string | null>(null);
     const [semanaOffset, setSemanaOffset] = useState(0);
     const [customPickerAberto, setCustomPickerAberto] = useState<null | 'cliente' | 'medico' | 'especialidade'>(null);
 
     const isAndroid = Platform.OS === 'android';
 
-    const dataInicio = useMemo(() => parseDataBR(periodoInicio), [periodoInicio]);
-    const dataFim = useMemo(() => parseDataBR(periodoFim), [periodoFim]);
+    const agendaInicio = useMemo(() => {
+        const hoje = new Date();
+        return new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate(), 0, 0, 0, 0);
+    }, []);
 
-    const periodoValido = !!dataInicio && !!dataFim && dataInicio <= dataFim;
+    const agendaFim = useMemo(() => {
+        const fim = addMeses(agendaInicio, 2);
+        fim.setDate(fim.getDate() - 1);
+        return fim;
+    }, [agendaInicio]);
+
+    const agendaDisponivel = medico !== '';
 
     const totalSemanas = useMemo(() => {
-        if (!periodoValido || !dataInicio || !dataFim) return 0;
-        const diffDias = Math.floor((dataFim.getTime() - dataInicio.getTime()) / (1000 * 60 * 60 * 24));
+        if (!agendaDisponivel) return 0;
+        const diffDias = Math.floor((agendaFim.getTime() - agendaInicio.getTime()) / (1000 * 60 * 60 * 24));
         return Math.floor(diffDias / 7) + 1;
-    }, [periodoValido, dataInicio, dataFim]);
+    }, [agendaDisponivel, agendaFim, agendaInicio]);
 
     useEffect(() => {
         setSemanaOffset(0);
         setHorarioSelecionado(null);
-    }, [periodoInicio, periodoFim]);
+    }, [medico]);
 
     useEffect(() => {
         if (totalSemanas === 0) {
@@ -102,24 +110,30 @@ export function CadastroTela() {
     }, [semanaOffset, totalSemanas]);
 
     const semanaAtual = useMemo(() => {
-        if (!periodoValido || !dataInicio || !dataFim) return [] as Date[];
+        if (!agendaDisponivel) return [] as Date[];
 
-        const inicioSemana = addDias(dataInicio, semanaOffset * 7);
+        const inicioSemana = addDias(agendaInicio, semanaOffset * 7);
         const dias: Date[] = [];
         for (let i = 0; i < 7; i += 1) {
             const dia = addDias(inicioSemana, i);
-            if (dia > dataFim) break;
+            if (dia > agendaFim) break;
             dias.push(dia);
         }
         return dias;
-    }, [periodoValido, dataInicio, dataFim, semanaOffset]);
+    }, [agendaDisponivel, agendaInicio, agendaFim, semanaOffset]);
 
-    const podeVoltarSemana = periodoValido && semanaOffset > 0;
-    const podeAvancarSemana = periodoValido && semanaOffset < totalSemanas - 1;
+    const podeVoltarSemana = agendaDisponivel && semanaOffset > 0;
+    const podeAvancarSemana = agendaDisponivel && semanaOffset < totalSemanas - 1;
 
     return (
         <SafeAreaView style={styles.safeArea}>
             <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
+                {onVoltar && (
+                    <TouchableOpacity style={styles.btnNav} onPress={onVoltar}>
+                        <Text style={styles.btnNavText}>Voltar</Text>
+                    </TouchableOpacity>
+                )}
+
                 <Text style={styles.titulo}>Marcação de Consulta</Text>
 
                 {/* Cliente */}
@@ -133,12 +147,19 @@ export function CadastroTela() {
                     <View style={styles.pickerWrapper}>
                         <Picker
                             selectedValue={cliente}
-                            onValueChange={setCliente}
+                            onValueChange={(valor) => {
+                                if (valor === opcaoCadastrarCliente) {
+                                    onAbrirCadastroCliente?.();
+                                    return;
+                                }
+                                setCliente(valor);
+                            }}
                             mode="dropdown"
                             dropdownIconColor="#1a3c5e"
                             style={styles.pickerNative}
                         >
                             {clientes.map(c => <Picker.Item key={c} label={c || 'Selecione o cliente'} value={c} />)}
+                            <Picker.Item label="+ Cadastrar cliente" value={opcaoCadastrarCliente} />
                         </Picker>
                     </View>
                 )}
@@ -204,34 +225,25 @@ export function CadastroTela() {
                     </View>
                 )}
 
-                {/* Período */}
-                <Text style={styles.label}>Período</Text>
-                <View style={styles.linhaData}>
-                    <TextInput
-                        style={[styles.input, styles.inputMeia]}
-                        placeholder="dd/mm/aaaa"
-                        value={periodoInicio}
-                        onChangeText={setPeriodoInicio}
-                    />
-                    <Text style={styles.separador}>até</Text>
-                    <TextInput
-                        style={[styles.input, styles.inputMeia]}
-                        placeholder="dd/mm/aaaa"
-                        value={periodoFim}
-                        onChangeText={setPeriodoFim}
-                    />
-                </View>
-                {periodoValido && semanaAtual.length > 0 && (
+                <Text style={styles.label}>Agenda do médico (2 meses)</Text>
+                {agendaDisponivel && semanaAtual.length > 0 && (
                     <Text style={styles.periodoInfo}>
                         Semana {semanaOffset + 1} de {totalSemanas}: {formatDataBR(semanaAtual[0])} ate {formatDataBR(semanaAtual[semanaAtual.length - 1])}
                     </Text>
                 )}
-                {(!periodoValido && (periodoInicio.length > 0 || periodoFim.length > 0)) && (
-                    <Text style={styles.periodoErro}>Digite um periodo valido no formato dd/mm/aaaa.</Text>
+                {!agendaDisponivel && (
+                    <Text style={styles.periodoAviso}>Selecione um médico para visualizar a agenda de 2 meses.</Text>
                 )}
 
-                {/* Tabela de Horários */}
-                <Text style={styles.label}>Horários disponíveis</Text>
+                <View style={styles.legendaContainer}>
+                    <Text style={styles.legendaItem}>L = Livre</Text>
+                    <Text style={styles.legendaItem}>C = Confirmado</Text>
+                    <Text style={styles.legendaItem}>M = Marcado</Text>
+                    <Text style={styles.legendaItem}>X = Indisponível</Text>
+                    <Text style={styles.legendaItem}>B = Bloqueado</Text>
+                </View>
+
+                <Text style={styles.label}>Horários da agenda</Text>
                 <View style={styles.tabelaContainer}>
                     <View style={styles.tabelaHeader}>
                         <Text style={styles.colunaHorario}>Horário</Text>
@@ -240,26 +252,40 @@ export function CadastroTela() {
                         ))}
                     </View>
 
-                    {!periodoValido && (
-                        <Text style={styles.periodoAviso}>Selecione o periodo para ver os horarios da semana.</Text>
+                    {!agendaDisponivel && (
+                        <Text style={styles.periodoAviso}>Selecione o médico para ver os horários da semana.</Text>
                     )}
 
-                    {periodoValido && horarios.map(h => (
+                    {agendaDisponivel && horarios.map(h => (
                         <View key={h} style={styles.tabelaLinha}>
                             <Text style={styles.colunaHorario}>{h}</Text>
                             {semanaAtual.map((dia) => {
-                                const chave = `${formatDataBR(dia)}|${h}`;
-                                const disponivel = gerarDisponibilidade(chave);
+                                const chave = `${medico}|${formatDataBR(dia)}|${h}`;
+                                const status = gerarStatusHorario(chave);
                                 const selecionado = horarioSelecionado === chave;
                                 return (
                                     <TouchableOpacity
                                         key={chave}
                                         style={styles.colunaDia}
-                                        onPress={() => disponivel && setHorarioSelecionado(chave)}
-                                        disabled={!disponivel}
+                                        onPress={() => status === 'L' && setHorarioSelecionado(chave)}
+                                        disabled={status !== 'L'}
                                     >
-                                        <Text style={selecionado ? styles.slotSelecionado : (disponivel ? styles.slotDisponivel : styles.slotIndisponivel)}>
-                                            {disponivel ? 'OK' : '--'}
+                                        <Text
+                                            style={
+                                                selecionado
+                                                    ? styles.slotSelecionado
+                                                    : status === 'L'
+                                                        ? styles.slotLivre
+                                                        : status === 'C'
+                                                            ? styles.slotConfirmado
+                                                            : status === 'M'
+                                                                ? styles.slotMarcado
+                                                                : status === 'X'
+                                                                    ? styles.slotIndisponivel
+                                                                    : styles.slotBloqueado
+                                            }
+                                        >
+                                            {status}
                                         </Text>
                                     </TouchableOpacity>
                                 );
@@ -292,7 +318,7 @@ export function CadastroTela() {
                 </View>
 
                 {/* Botão Confirmar */}
-                <TouchableOpacity style={styles.btnConfirmar}>
+                <TouchableOpacity style={styles.btnConfirmar} onPress={onConfirmar}>
                     <Text style={styles.btnConfirmarText}>Confirmar</Text>
                 </TouchableOpacity>
             </ScrollView>
@@ -300,20 +326,27 @@ export function CadastroTela() {
             <Modal visible={!isAndroid && customPickerAberto !== null} transparent animationType="fade" onRequestClose={() => setCustomPickerAberto(null)}>
                 <View style={styles.modalBackdrop}>
                     <View style={styles.modalCard}>
-                        {(customPickerAberto === 'cliente' ? clientes : customPickerAberto === 'medico' ? medicos : especialidades)
+                        {(customPickerAberto === 'cliente' ? [...clientes, opcaoCadastrarCliente] : customPickerAberto === 'medico' ? medicos : especialidades)
                             .filter(item => item !== '')
                             .map(item => (
                                 <TouchableOpacity
                                     key={item}
                                     style={styles.modalOption}
                                     onPress={() => {
-                                        if (customPickerAberto === 'cliente') setCliente(item);
+                                        if (customPickerAberto === 'cliente') {
+                                            if (item === opcaoCadastrarCliente) {
+                                                setCustomPickerAberto(null);
+                                                onAbrirCadastroCliente?.();
+                                                return;
+                                            }
+                                            setCliente(item);
+                                        }
                                         if (customPickerAberto === 'medico') setMedico(item);
                                         if (customPickerAberto === 'especialidade') setEspecialidade(item);
                                         setCustomPickerAberto(null);
                                     }}
                                 >
-                                    <Text style={styles.modalOptionText}>{item}</Text>
+                                    <Text style={styles.modalOptionText}>{item === opcaoCadastrarCliente ? '+ Cadastrar cliente' : item}</Text>
                                 </TouchableOpacity>
                             ))}
                         <TouchableOpacity style={styles.modalCancel} onPress={() => setCustomPickerAberto(null)}>

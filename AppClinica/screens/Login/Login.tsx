@@ -8,9 +8,16 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import { getStyle } from './LoginStyle';
+
+type LoginTelaProps = {
+    darkMode?: boolean;
+    onLogin?: () => void;
+    onAcessarMedico?: () => void;
+    onAcessarRecepcao?: () => void;
+};
  
-export function LoginTela() {
-    const styles = getStyle();
+export function LoginTela({ darkMode = false, onLogin, onAcessarMedico, onAcessarRecepcao }: LoginTelaProps) {
+    const styles = getStyle(darkMode);
  
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
@@ -81,7 +88,7 @@ export function LoginTela() {
  
                 
                     {/* Botão Entrar */}
-                    <TouchableOpacity style={styles.btnEntrar}>
+                    <TouchableOpacity style={styles.btnEntrar} onPress={onLogin}>
                         <Text style={styles.btnEntrarTexto}>Entrar</Text>
                     </TouchableOpacity>
  
@@ -95,11 +102,11 @@ export function LoginTela() {
                     {/* Perfis de acesso rápido (mockup) */}
                     <Text style={styles.perfilLabel}>Acessar como:</Text>
                     <View style={styles.perfilRow}>
-                        <TouchableOpacity style={styles.perfilBtn}>
+                        <TouchableOpacity style={styles.perfilBtn} onPress={onAcessarMedico}>
                             <Text style={styles.perfilIcone}>👨‍⚕️</Text>
                             <Text style={styles.perfilTexto}>Médico</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.perfilBtn}>
+                        <TouchableOpacity style={styles.perfilBtn} onPress={onAcessarRecepcao}>
                             <Text style={styles.perfilIcone}>🧑‍💼</Text>
                             <Text style={styles.perfilTexto}>Recepção</Text>
                         </TouchableOpacity>

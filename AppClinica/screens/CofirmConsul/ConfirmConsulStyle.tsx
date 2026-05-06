@@ -1,11 +1,17 @@
 import { StyleSheet } from "react-native";
 
-export const getStyle = () => {
+export const getStyle = (darkMode = false) => {
+    const background = darkMode ? '#111827' : '#f0f4f8';
+    const surface = darkMode ? '#1f2937' : '#fff';
+    const border = darkMode ? '#374151' : '#d0d7de';
+    const textPrimary = darkMode ? '#f3f4f6' : '#1a3c5e';
+    const textSoft = darkMode ? '#9ca3af' : '#667085';
+
     return StyleSheet.create({
         safeArea: {
             flex: 1,
             width: '100%',
-            backgroundColor: '#f0f4f8',
+            backgroundColor: background,
         },
         scrollContent: {
             flexGrow: 1,
@@ -18,13 +24,13 @@ export const getStyle = () => {
         titulo: {
             fontSize: 22,
             fontWeight: 'bold',
-            color: '#1a3c5e',
+            color: textPrimary,
             marginBottom: 4,
             textAlign: 'center',
         },
         dataHoje: {
             fontSize: 13,
-            color: '#667085',
+            color: textSoft,
             textAlign: 'center',
             marginBottom: 20,
             textTransform: 'capitalize',
@@ -62,7 +68,7 @@ export const getStyle = () => {
         },
         resumoLabel: {
             fontSize: 11,
-            color: '#667085',
+            color: textSoft,
             marginTop: 2,
             fontWeight: '600',
             textTransform: 'uppercase',
@@ -73,7 +79,7 @@ export const getStyle = () => {
         secaoTitulo: {
             fontSize: 13,
             fontWeight: '600',
-            color: '#555',
+            color: darkMode ? '#d1d5db' : '#555',
             marginBottom: 10,
             marginTop: 4,
             textTransform: 'uppercase',
@@ -82,12 +88,12 @@ export const getStyle = () => {
 
         // Cards de consulta
         card: {
-            backgroundColor: '#fff',
+            backgroundColor: surface,
             borderRadius: 12,
             padding: 16,
             marginBottom: 12,
             borderWidth: 1,
-            borderColor: '#d0d7de',
+            borderColor: border,
         },
         cardConfirmada: {
             borderColor: '#6ce9a6',
@@ -106,16 +112,16 @@ export const getStyle = () => {
         cardHorario: {
             fontSize: 13,
             fontWeight: '700',
-            color: '#1a3c5e',
+            color: darkMode ? '#93c5fd' : '#1a3c5e',
         },
         cardCliente: {
             fontSize: 17,
             fontWeight: 'bold',
-            color: '#1f2933',
+            color: darkMode ? '#f3f4f6' : '#1f2933',
             marginBottom: 8,
         },
         cardClienteResolvido: {
-            color: '#667085',
+            color: textSoft,
         },
         cardInfoRow: {
             flexDirection: 'row',
@@ -123,12 +129,12 @@ export const getStyle = () => {
         },
         cardInfoLabel: {
             fontSize: 13,
-            color: '#667085',
+            color: textSoft,
             width: 100,
         },
         cardInfoValor: {
             fontSize: 13,
-            color: '#333',
+            color: darkMode ? '#d1d5db' : '#333',
             fontWeight: '500',
             flex: 1,
         },
@@ -166,7 +172,7 @@ export const getStyle = () => {
         badgeTexto: {
             fontSize: 11,
             fontWeight: '600',
-            color: '#1a3c5e',
+            color: darkMode ? '#111827' : '#1a3c5e',
         },
 
         // Botões de ação nos cards
@@ -190,17 +196,17 @@ export const getStyle = () => {
 
         // Estado vazio
         vazioContainer: {
-            backgroundColor: '#fff',
+            backgroundColor: surface,
             borderRadius: 12,
             padding: 24,
             alignItems: 'center',
             borderWidth: 1,
-            borderColor: '#d0d7de',
+            borderColor: border,
             marginBottom: 12,
         },
         vazioTexto: {
             fontSize: 14,
-            color: '#667085',
+            color: textSoft,
             textAlign: 'center',
         },
 
@@ -212,7 +218,7 @@ export const getStyle = () => {
             padding: 20,
         },
         modalCard: {
-            backgroundColor: '#fff',
+            backgroundColor: surface,
             borderRadius: 12,
             overflow: 'hidden',
             padding: 20,
@@ -220,12 +226,12 @@ export const getStyle = () => {
         modalTitulo: {
             fontSize: 17,
             fontWeight: 'bold',
-            color: '#1a3c5e',
+            color: darkMode ? '#f3f4f6' : '#1a3c5e',
             marginBottom: 14,
             textAlign: 'center',
         },
         modalInfo: {
-            backgroundColor: '#f0f4f8',
+            backgroundColor: darkMode ? '#111827' : '#f0f4f8',
             borderRadius: 8,
             padding: 12,
             marginBottom: 14,
@@ -233,16 +239,16 @@ export const getStyle = () => {
         modalCliente: {
             fontSize: 16,
             fontWeight: 'bold',
-            color: '#1f2933',
+            color: darkMode ? '#f3f4f6' : '#1f2933',
             marginBottom: 4,
         },
         modalDetalhe: {
             fontSize: 13,
-            color: '#667085',
+            color: textSoft,
         },
         modalPergunta: {
             fontSize: 14,
-            color: '#444',
+            color: darkMode ? '#d1d5db' : '#444',
             textAlign: 'center',
             marginBottom: 20,
         },
@@ -254,13 +260,13 @@ export const getStyle = () => {
             flex: 1,
             paddingVertical: 12,
             borderRadius: 8,
-            backgroundColor: '#e8edf2',
+            backgroundColor: darkMode ? '#374151' : '#e8edf2',
             alignItems: 'center',
         },
         modalCancelText: {
             fontSize: 15,
             fontWeight: '600',
-            color: '#1a3c5e',
+            color: darkMode ? '#93c5fd' : '#1a3c5e',
         },
         modalConfirm: {
             flex: 1,
@@ -279,7 +285,7 @@ export const getStyle = () => {
         },
         modalSucessoTexto: {
             fontSize: 15,
-            color: '#1f2933',
+            color: darkMode ? '#f3f4f6' : '#1f2933',
             textAlign: 'center',
             marginBottom: 20,
         },

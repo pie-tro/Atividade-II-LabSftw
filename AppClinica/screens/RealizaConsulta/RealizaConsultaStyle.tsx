@@ -1,11 +1,17 @@
 import { StyleSheet } from 'react-native';
  
-export const getStyle = () => {
+export const getStyle = (darkMode = false) => {
+    const background = darkMode ? '#111827' : '#f0f4f8';
+    const surface = darkMode ? '#1f2937' : '#fff';
+    const border = darkMode ? '#374151' : '#d0d7de';
+    const textPrimary = darkMode ? '#f3f4f6' : '#1a3c5e';
+    const textSoft = darkMode ? '#9ca3af' : '#667085';
+
     return StyleSheet.create({
         safeArea: {
             flex: 1,
             width: '100%',
-            backgroundColor: '#f0f4f8',
+            backgroundColor: background,
         },
         scrollContent: {
             flexGrow: 1,
@@ -18,13 +24,13 @@ export const getStyle = () => {
         titulo: {
             fontSize: 22,
             fontWeight: 'bold',
-            color: '#1a3c5e',
+            color: textPrimary,
             marginBottom: 4,
             textAlign: 'center',
         },
         subtitulo: {
             fontSize: 13,
-            color: '#667085',
+            color: textSoft,
             textAlign: 'center',
             marginBottom: 24,
         },
@@ -33,7 +39,7 @@ export const getStyle = () => {
         secaoTitulo: {
             fontSize: 13,
             fontWeight: '600',
-            color: '#555',
+            color: darkMode ? '#d1d5db' : '#555',
             marginBottom: 10,
             marginTop: 4,
             textTransform: 'uppercase',
@@ -42,16 +48,16 @@ export const getStyle = () => {
  
         // Cards de paciente
         pacienteCard: {
-            backgroundColor: '#fff',
+            backgroundColor: surface,
             borderRadius: 12,
             padding: 14,
             marginBottom: 10,
             borderWidth: 1,
-            borderColor: '#d0d7de',
+            borderColor: border,
         },
         pacienteCardSelecionado: {
             borderColor: '#1a3c5e',
-            backgroundColor: '#f0f4f8',
+            backgroundColor: darkMode ? '#1e3a5f' : '#f0f4f8',
         },
         pacienteCardRow: {
             flexDirection: 'row',
@@ -63,10 +69,10 @@ export const getStyle = () => {
             height: 24,
             borderRadius: 12,
             borderWidth: 2,
-            borderColor: '#d0d7de',
+            borderColor: border,
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: '#fff',
+            backgroundColor: surface,
         },
         checkCircleAtivo: {
             backgroundColor: '#1a3c5e',
@@ -83,14 +89,14 @@ export const getStyle = () => {
         pacienteNome: {
             fontSize: 15,
             fontWeight: '600',
-            color: '#1f2933',
+            color: darkMode ? '#f3f4f6' : '#1f2933',
         },
         pacienteNomeSelecionado: {
-            color: '#1a3c5e',
+            color: darkMode ? '#93c5fd' : '#1a3c5e',
         },
         pacienteHorario: {
             fontSize: 12,
-            color: '#667085',
+            color: textSoft,
             marginTop: 2,
         },
         badgeSelecionado: {
@@ -132,12 +138,12 @@ export const getStyle = () => {
  
         // Dados do paciente
         dadosCard: {
-            backgroundColor: '#fff',
+            backgroundColor: surface,
             borderRadius: 12,
             padding: 16,
             marginBottom: 16,
             borderWidth: 1,
-            borderColor: '#d0d7de',
+            borderColor: border,
         },
         dadosRow: {
             flexDirection: 'row',
@@ -149,12 +155,12 @@ export const getStyle = () => {
         },
         dadosSeparador: {
             height: 1,
-            backgroundColor: '#e4e7ec',
+            backgroundColor: darkMode ? '#374151' : '#e4e7ec',
             marginBottom: 12,
         },
         dadoLabel: {
             fontSize: 12,
-            color: '#667085',
+            color: textSoft,
             fontWeight: '600',
             textTransform: 'uppercase',
             letterSpacing: 0.4,
@@ -162,39 +168,39 @@ export const getStyle = () => {
         },
         dadoValor: {
             fontSize: 14,
-            color: '#1f2933',
+            color: darkMode ? '#f3f4f6' : '#1f2933',
             fontWeight: '500',
         },
  
         // Histórico
         historicoCard: {
-            backgroundColor: '#fff',
+            backgroundColor: surface,
             borderRadius: 12,
             padding: 16,
             marginBottom: 16,
             borderWidth: 1,
-            borderColor: '#d0d7de',
+            borderColor: border,
             minHeight: 100,
         },
         historicoTexto: {
             fontSize: 14,
-            color: '#444',
+            color: darkMode ? '#d1d5db' : '#444',
             lineHeight: 22,
         },
  
         // TextArea (Laudo / Receita)
         textAreaCard: {
-            backgroundColor: '#fff',
+            backgroundColor: surface,
             borderRadius: 12,
             borderWidth: 1,
-            borderColor: '#d0d7de',
+            borderColor: border,
             marginBottom: 16,
             padding: 14,
             minHeight: 110,
         },
         textArea: {
             fontSize: 14,
-            color: '#1f2933',
+            color: darkMode ? '#f3f4f6' : '#1f2933',
             lineHeight: 22,
             minHeight: 80,
         },
@@ -242,19 +248,19 @@ export const getStyle = () => {
             padding: 20,
         },
         modalCard: {
-            backgroundColor: '#fff',
+            backgroundColor: surface,
             borderRadius: 12,
             padding: 20,
         },
         modalTitulo: {
             fontSize: 17,
             fontWeight: 'bold',
-            color: '#1a3c5e',
+            color: darkMode ? '#f3f4f6' : '#1a3c5e',
             marginBottom: 14,
             textAlign: 'center',
         },
         modalInfo: {
-            backgroundColor: '#f0f4f8',
+            backgroundColor: darkMode ? '#111827' : '#f0f4f8',
             borderRadius: 8,
             padding: 12,
             marginBottom: 14,
@@ -262,16 +268,16 @@ export const getStyle = () => {
         modalCliente: {
             fontSize: 16,
             fontWeight: 'bold',
-            color: '#1f2933',
+            color: darkMode ? '#f3f4f6' : '#1f2933',
             marginBottom: 4,
         },
         modalDetalhe: {
             fontSize: 13,
-            color: '#667085',
+            color: textSoft,
         },
         modalPergunta: {
             fontSize: 14,
-            color: '#444',
+            color: darkMode ? '#d1d5db' : '#444',
             textAlign: 'center',
             marginBottom: 20,
         },
@@ -283,13 +289,13 @@ export const getStyle = () => {
             flex: 1,
             paddingVertical: 12,
             borderRadius: 8,
-            backgroundColor: '#e8edf2',
+            backgroundColor: darkMode ? '#374151' : '#e8edf2',
             alignItems: 'center',
         },
         modalCancelText: {
             fontSize: 15,
             fontWeight: '600',
-            color: '#1a3c5e',
+            color: darkMode ? '#93c5fd' : '#1a3c5e',
         },
         modalConfirm: {
             flex: 1,
@@ -310,7 +316,7 @@ export const getStyle = () => {
         },
         modalSucessoTexto: {
             fontSize: 14,
-            color: '#1f2933',
+            color: darkMode ? '#f3f4f6' : '#1f2933',
             textAlign: 'center',
             marginBottom: 20,
             lineHeight: 20,

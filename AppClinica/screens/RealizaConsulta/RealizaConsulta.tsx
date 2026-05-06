@@ -42,8 +42,13 @@ const pacientesIniciais: Paciente[] = [
     },
 ];
 
-export function RealizaConsultaTela() {
-    const styles = getStyle();
+type RealizaConsultaTelaProps = {
+    darkMode?: boolean;
+    onVoltar?: () => void;
+};
+
+export function RealizaConsultaTela({ darkMode = false, onVoltar }: RealizaConsultaTelaProps) {
+    const styles = getStyle(darkMode);
 
     const [pacientes] = useState<Paciente[]>(pacientesIniciais);
     const [pacienteSelecionado, setPacienteSelecionado] = useState<Paciente | null>(null);
@@ -84,6 +89,12 @@ export function RealizaConsultaTela() {
                 contentContainerStyle={styles.scrollContent}
                 keyboardShouldPersistTaps="handled"
             >
+                {onVoltar && (
+                    <TouchableOpacity style={styles.modalCancel} onPress={onVoltar}>
+                        <Text style={styles.modalCancelText}>Voltar</Text>
+                    </TouchableOpacity>
+                )}
+
                 <Text style={styles.titulo}>Realização de Consulta</Text>
                 <Text style={styles.subtitulo}>Dr. Ana · {new Date().toLocaleDateString('pt-BR')}</Text>
 

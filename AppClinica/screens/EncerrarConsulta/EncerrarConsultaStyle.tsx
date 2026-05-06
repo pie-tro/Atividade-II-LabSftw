@@ -1,11 +1,17 @@
 import { StyleSheet } from 'react-native';
 
-export const getStyle = () => {
+export const getStyle = (darkMode = false) => {
+    const background = darkMode ? '#111827' : '#f0f4f8';
+    const surface = darkMode ? '#1f2937' : '#fff';
+    const border = darkMode ? '#374151' : '#d0d7de';
+    const textPrimary = darkMode ? '#f3f4f6' : '#1a3c5e';
+    const textSoft = darkMode ? '#9ca3af' : '#667085';
+
     return StyleSheet.create({
         safeArea: {
             flex: 1,
             width: '100%',
-            backgroundColor: '#f0f4f8',
+            backgroundColor: background,
         },
         scrollContent: {
             flexGrow: 1,
@@ -18,13 +24,13 @@ export const getStyle = () => {
         titulo: {
             fontSize: 22,
             fontWeight: 'bold',
-            color: '#1a3c5e',
+            color: textPrimary,
             marginBottom: 4,
             textAlign: 'center',
         },
         subtitulo: {
             fontSize: 13,
-            color: '#667085',
+            color: textSoft,
             textAlign: 'center',
             marginBottom: 20,
             textTransform: 'capitalize',
@@ -34,7 +40,7 @@ export const getStyle = () => {
         secaoTitulo: {
             fontSize: 13,
             fontWeight: '600',
-            color: '#555',
+            color: darkMode ? '#d1d5db' : '#555',
             marginBottom: 10,
             marginTop: 4,
             textTransform: 'uppercase',
@@ -43,16 +49,16 @@ export const getStyle = () => {
 
         // Cards de consulta
         card: {
-            backgroundColor: '#fff',
+            backgroundColor: surface,
             borderRadius: 12,
             padding: 16,
             marginBottom: 12,
             borderWidth: 1,
-            borderColor: '#d0d7de',
+            borderColor: border,
         },
         cardSelecionado: {
             borderColor: '#1a3c5e',
-            backgroundColor: '#f0f4f8',
+            backgroundColor: darkMode ? '#1e3a5f' : '#f0f4f8',
         },
         cardEncerrado: {
             borderColor: '#6ce9a6',
@@ -67,12 +73,12 @@ export const getStyle = () => {
         cardHorario: {
             fontSize: 13,
             fontWeight: '700',
-            color: '#1a3c5e',
+            color: darkMode ? '#93c5fd' : '#1a3c5e',
         },
         cardPaciente: {
             fontSize: 17,
             fontWeight: 'bold',
-            color: '#1f2933',
+            color: darkMode ? '#f3f4f6' : '#1f2933',
             marginBottom: 8,
         },
         cardInfoRow: {
@@ -81,12 +87,12 @@ export const getStyle = () => {
         },
         cardInfoLabel: {
             fontSize: 13,
-            color: '#667085',
+            color: textSoft,
             width: 100,
         },
         cardInfoValor: {
             fontSize: 13,
-            color: '#333',
+            color: darkMode ? '#d1d5db' : '#333',
             fontWeight: '500',
             flex: 1,
         },
@@ -139,7 +145,7 @@ export const getStyle = () => {
         badgeTexto: {
             fontSize: 11,
             fontWeight: '600',
-            color: '#1a3c5e',
+            color: darkMode ? '#111827' : '#1a3c5e',
         },
 
         // Pagamento
@@ -153,15 +159,15 @@ export const getStyle = () => {
             flex: 1,
             minWidth: '40%',
             borderWidth: 1,
-            borderColor: '#d0d7de',
+            borderColor: border,
             borderRadius: 10,
             paddingVertical: 14,
             alignItems: 'center',
-            backgroundColor: '#fff',
+            backgroundColor: surface,
         },
         pagamentoBtnAtivo: {
             borderColor: '#1a3c5e',
-            backgroundColor: '#f0f4f8',
+            backgroundColor: darkMode ? '#1e3a5f' : '#f0f4f8',
         },
         pagamentoIcone: {
             fontSize: 22,
@@ -170,10 +176,10 @@ export const getStyle = () => {
         pagamentoLabel: {
             fontSize: 13,
             fontWeight: '600',
-            color: '#667085',
+            color: textSoft,
         },
         pagamentoLabelAtivo: {
-            color: '#1a3c5e',
+            color: darkMode ? '#93c5fd' : '#1a3c5e',
         },
 
         // Procedimentos
@@ -185,11 +191,11 @@ export const getStyle = () => {
         },
         procBtn: {
             borderWidth: 1,
-            borderColor: '#d0d7de',
+            borderColor: border,
             borderRadius: 20,
             paddingHorizontal: 14,
             paddingVertical: 8,
-            backgroundColor: '#fff',
+            backgroundColor: surface,
         },
         procBtnAtivo: {
             borderColor: '#1a3c5e',
@@ -197,7 +203,7 @@ export const getStyle = () => {
         },
         procTexto: {
             fontSize: 13,
-            color: '#444',
+            color: darkMode ? '#d1d5db' : '#444',
             fontWeight: '500',
         },
         procTextoAtivo: {
@@ -207,17 +213,17 @@ export const getStyle = () => {
 
         // TextArea observações
         textAreaCard: {
-            backgroundColor: '#fff',
+            backgroundColor: surface,
             borderRadius: 12,
             borderWidth: 1,
-            borderColor: '#d0d7de',
+            borderColor: border,
             marginBottom: 16,
             padding: 14,
             minHeight: 90,
         },
         textArea: {
             fontSize: 14,
-            color: '#1f2933',
+            color: darkMode ? '#f3f4f6' : '#1f2933',
             lineHeight: 22,
             minHeight: 60,
         },
@@ -248,17 +254,17 @@ export const getStyle = () => {
 
         // Vazio
         vazioContainer: {
-            backgroundColor: '#fff',
+            backgroundColor: surface,
             borderRadius: 12,
             padding: 24,
             alignItems: 'center',
             borderWidth: 1,
-            borderColor: '#d0d7de',
+            borderColor: border,
             marginBottom: 12,
         },
         vazioTexto: {
             fontSize: 14,
-            color: '#667085',
+            color: textSoft,
             textAlign: 'center',
         },
 
@@ -270,19 +276,19 @@ export const getStyle = () => {
             padding: 20,
         },
         modalCard: {
-            backgroundColor: '#fff',
+            backgroundColor: surface,
             borderRadius: 12,
             padding: 20,
         },
         modalTitulo: {
             fontSize: 17,
             fontWeight: 'bold',
-            color: '#1a3c5e',
+            color: darkMode ? '#f3f4f6' : '#1a3c5e',
             marginBottom: 14,
             textAlign: 'center',
         },
         modalInfo: {
-            backgroundColor: '#f0f4f8',
+            backgroundColor: darkMode ? '#111827' : '#f0f4f8',
             borderRadius: 8,
             padding: 12,
             marginBottom: 14,
@@ -291,16 +297,16 @@ export const getStyle = () => {
         modalPaciente: {
             fontSize: 16,
             fontWeight: 'bold',
-            color: '#1f2933',
+            color: darkMode ? '#f3f4f6' : '#1f2933',
             marginBottom: 4,
         },
         modalDetalhe: {
             fontSize: 13,
-            color: '#667085',
+            color: textSoft,
         },
         modalPergunta: {
             fontSize: 14,
-            color: '#444',
+            color: darkMode ? '#d1d5db' : '#444',
             textAlign: 'center',
             marginBottom: 20,
         },
@@ -312,13 +318,13 @@ export const getStyle = () => {
             flex: 1,
             paddingVertical: 12,
             borderRadius: 8,
-            backgroundColor: '#e8edf2',
+            backgroundColor: darkMode ? '#374151' : '#e8edf2',
             alignItems: 'center',
         },
         modalCancelText: {
             fontSize: 15,
             fontWeight: '600',
-            color: '#1a3c5e',
+            color: darkMode ? '#93c5fd' : '#1a3c5e',
         },
         modalConfirm: {
             flex: 1,
@@ -339,7 +345,7 @@ export const getStyle = () => {
         },
         modalSucessoTexto: {
             fontSize: 14,
-            color: '#1f2933',
+            color: darkMode ? '#f3f4f6' : '#1f2933',
             textAlign: 'center',
             marginBottom: 20,
             lineHeight: 20,

@@ -1,11 +1,17 @@
 import { StyleSheet } from "react-native";
 
-export const getStyle = () => {
+export const getStyle = (darkMode = false) => {
+    const background = darkMode ? '#111827' : '#f0f4f8';
+    const surface = darkMode ? '#1f2937' : '#fff';
+    const border = darkMode ? '#374151' : '#d0d7de';
+    const textPrimary = darkMode ? '#f3f4f6' : '#1a3c5e';
+    const textSecondary = darkMode ? '#d1d5db' : '#555';
+
     return StyleSheet.create({
         safeArea: {
             flex: 1,
             width: '100%',
-            backgroundColor: '#f0f4f8',
+            backgroundColor: background,
         },
         scrollContent: {
             flexGrow: 1,
@@ -16,33 +22,33 @@ export const getStyle = () => {
         titulo: {
             fontSize: 22,
             fontWeight: 'bold',
-            color: '#1a3c5e',
+            color: textPrimary,
             marginBottom: 24,
             textAlign: 'center',
         },
         label: {
             fontSize: 13,
             fontWeight: '600',
-            color: '#555',
+            color: textSecondary,
             marginBottom: 6,
             marginTop: 14,
             textTransform: 'uppercase',
             letterSpacing: 0.5,
         },
         input: {
-            backgroundColor: '#fff',
+            backgroundColor: surface,
             borderWidth: 1,
-            borderColor: '#d0d7de',
+            borderColor: border,
             borderRadius: 10,
             paddingHorizontal: 14,
             paddingVertical: 12,
             fontSize: 15,
-            color: '#222',
+            color: darkMode ? '#e5e7eb' : '#222',
         },
         pickerWrapper: {
-            backgroundColor: '#fff',
+            backgroundColor: surface,
             borderWidth: 1,
-            borderColor: '#d0d7de',
+            borderColor: border,
             borderRadius: 10,
             overflow: 'hidden',
             minHeight: 52,
@@ -55,9 +61,9 @@ export const getStyle = () => {
         selectButton: {
             minHeight: 52,
             borderWidth: 1,
-            borderColor: '#d0d7de',
+            borderColor: border,
             borderRadius: 10,
-            backgroundColor: '#fff',
+            backgroundColor: surface,
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -65,11 +71,11 @@ export const getStyle = () => {
         },
         selectButtonText: {
             fontSize: 15,
-            color: '#222',
+            color: darkMode ? '#e5e7eb' : '#222',
         },
         selectChevron: {
             fontSize: 12,
-            color: '#1a3c5e',
+            color: darkMode ? '#93c5fd' : '#1a3c5e',
         },
         linhaData: {
             flexDirection: 'row',
@@ -87,7 +93,7 @@ export const getStyle = () => {
         periodoInfo: {
             marginTop: 8,
             fontSize: 13,
-            color: '#1a3c5e',
+            color: textPrimary,
             fontWeight: '600',
         },
         periodoErro: {
@@ -99,13 +105,30 @@ export const getStyle = () => {
             paddingHorizontal: 10,
             paddingVertical: 12,
             fontSize: 13,
-            color: '#667085',
+            color: darkMode ? '#9ca3af' : '#667085',
+        },
+        legendaContainer: {
+            marginTop: 10,
+            marginBottom: 8,
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            gap: 8,
+        },
+        legendaItem: {
+            fontSize: 12,
+            color: darkMode ? '#d1d5db' : '#344054',
+            backgroundColor: darkMode ? '#111827' : '#f8fafc',
+            borderWidth: 1,
+            borderColor: border,
+            borderRadius: 999,
+            paddingHorizontal: 10,
+            paddingVertical: 4,
         },
         tabelaContainer: {
-            backgroundColor: '#fff',
+            backgroundColor: surface,
             borderRadius: 10,
             borderWidth: 1,
-            borderColor: '#d0d7de',
+            borderColor: border,
             overflow: 'hidden',
             marginTop: 6,
         },
@@ -120,15 +143,15 @@ export const getStyle = () => {
             paddingVertical: 14,
             paddingHorizontal: 8,
             borderBottomWidth: 1,
-            borderColor: '#eef0f3',
+            borderColor: darkMode ? '#374151' : '#eef0f3',
         },
         linhaSelecionada: {
-            backgroundColor: '#ddeeff',
+            backgroundColor: darkMode ? '#1e3a5f' : '#ddeeff',
         },
         colunaHorario: {
             width: 95,
             fontSize: 13,
-            color: '#333',
+            color: darkMode ? '#d1d5db' : '#333',
         },
         colunaDia: {
             flex: 1,
@@ -137,14 +160,33 @@ export const getStyle = () => {
             color: '#aaa',
             alignItems: 'center',
         },
-        slotDisponivel: {
+        slotLivre: {
             color: '#067647',
+            fontWeight: '700',
+            textAlign: 'center',
+            fontSize: 12,
+        },
+        slotConfirmado: {
+            color: '#1d4ed8',
+            fontWeight: '700',
+            textAlign: 'center',
+            fontSize: 12,
+        },
+        slotMarcado: {
+            color: '#b54708',
             fontWeight: '700',
             textAlign: 'center',
             fontSize: 12,
         },
         slotIndisponivel: {
             color: '#98a2b3',
+            fontWeight: '700',
+            textAlign: 'center',
+            fontSize: 12,
+        },
+        slotBloqueado: {
+            color: '#b42318',
+            fontWeight: '700',
             textAlign: 'center',
             fontSize: 12,
         },
@@ -159,20 +201,20 @@ export const getStyle = () => {
             justifyContent: 'space-between',
             padding: 12,
             borderTopWidth: 1,
-            borderColor: '#eef0f3',
+            borderColor: darkMode ? '#374151' : '#eef0f3',
         },
         btnNav: {
             paddingHorizontal: 16,
             paddingVertical: 8,
             borderRadius: 8,
-            backgroundColor: '#e8edf2',
+            backgroundColor: darkMode ? '#374151' : '#e8edf2',
         },
         btnNavDisabled: {
             opacity: 0.45,
         },
         btnNavText: {
             fontSize: 14,
-            color: '#1a3c5e',
+            color: darkMode ? '#e5e7eb' : '#1a3c5e',
             fontWeight: '600',
         },
         btnConfirmar: {
@@ -195,7 +237,7 @@ export const getStyle = () => {
             padding: 20,
         },
         modalCard: {
-            backgroundColor: '#fff',
+            backgroundColor: surface,
             borderRadius: 12,
             overflow: 'hidden',
         },
@@ -203,21 +245,21 @@ export const getStyle = () => {
             paddingVertical: 14,
             paddingHorizontal: 16,
             borderBottomWidth: 1,
-            borderColor: '#eef0f3',
+            borderColor: darkMode ? '#374151' : '#eef0f3',
         },
         modalOptionText: {
             fontSize: 15,
-            color: '#1f2933',
+            color: darkMode ? '#e5e7eb' : '#1f2933',
         },
         modalCancel: {
             paddingVertical: 14,
             alignItems: 'center',
-            backgroundColor: '#f6f8fa',
+            backgroundColor: darkMode ? '#111827' : '#f6f8fa',
         },
         modalCancelText: {
             fontSize: 15,
             fontWeight: '600',
-            color: '#1a3c5e',
+            color: darkMode ? '#93c5fd' : '#1a3c5e',
         },
         // legado
         mainWrapper: { flex: 1 },

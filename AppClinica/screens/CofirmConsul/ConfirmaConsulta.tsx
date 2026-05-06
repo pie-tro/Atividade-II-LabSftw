@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
     View,
     Text,
@@ -19,6 +19,12 @@ interface Consulta {
     horario: string;
     status: StatusConsulta;
 }
+
+type ConfirmacaoTelaProps = {
+    darkMode?: boolean;
+    onVoltar?: () => void;
+    onIrHistorico?: () => void;
+};
 
 const consultasIniciais: Consulta[] = [
     {
@@ -64,13 +70,22 @@ function getDataHojeBR(): string {
     });
 }
 
-export function ConfirmacaoTela() {
-    const styles = getStyle();
+export function ConfirmacaoTela({ darkMode = false, onVoltar, onIrHistorico }: ConfirmacaoTelaProps) {
+    const styles = getStyle(darkMode);
+    const redirecionamentoTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const [consultas, setConsultas] = useState<Consulta[]>(consultasIniciais);
     const [modalConsulta, setModalConsulta] = useState<Consulta | null>(null);
     const [modalTipo, setModalTipo] = useState<'confirmar' | 'nao_compareceu' | null>(null);
     const [modalSucesso, setModalSucesso] = useState<string | null>(null);
+
+    useEffect(() => {
+        return () => {
+            if (redirecionamentoTimer.current) {
+                clearTimeout(redirecionamentoTimer.current);
+            }
+        };
+    }, []);
 
     const pendentes = consultas.filter(c => c.status === 'pendente');
     const resolvidas = consultas.filter(c => c.status !== 'pendente');
@@ -104,6 +119,14 @@ export function ConfirmacaoTela() {
 
         fecharModal();
         setModalSucesso(msg);
+
+        if (redirecionamentoTimer.current) {
+            clearTimeout(redirecionamentoTimer.current);
+        }
+
+        redirecionamentoTimer.current = setTimeout(() => {
+            onIrHistorico?.();
+        }, 3000);
     }
 
     return (
@@ -112,6 +135,12 @@ export function ConfirmacaoTela() {
                 contentContainerStyle={styles.scrollContent}
                 keyboardShouldPersistTaps="handled"
             >
+                {onVoltar && (
+                    <TouchableOpacity style={styles.modalCancel} onPress={onVoltar}>
+                        <Text style={styles.modalCancelText}>Voltar</Text>
+                    </TouchableOpacity>
+                )}
+
                 <Text style={styles.titulo}>Confirmação de Consultas</Text>
                 <Text style={styles.dataHoje}>{getDataHojeBR()}</Text>
 
