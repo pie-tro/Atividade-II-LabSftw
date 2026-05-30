@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "893564521158",
+    "project_id": "appclinica-724ba",
+    "storage_bucket": "appclinica-724ba.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:893564521158:android:c66ce1deed0c5211e925c7",
+        "android_client_info": {
+          "package_name": "com.appclinica"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAV5KpitFQvBCRAEsuNSoQia5IzAXTQ92U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
