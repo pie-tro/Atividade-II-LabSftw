@@ -47,3 +47,11 @@ export const atualizarCliente = async (id: string, dados: any) => {
 export const deletarCliente = async (id: string) => {
   return await deleteDoc(doc(db, colecao, id));
 };
+
+
+export const salvarConsulta = async (dados: any) => {
+  return await addDoc(collection(db, 'consultas'), {
+    ...dados,
+    criadoEm: serverTimestamp(),
+  });
+};

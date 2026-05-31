@@ -1,13 +1,13 @@
 import React, { useEffect, useMemo, useState } from "react";
 import {
     View, Text, TextInput, TouchableOpacity,
-    ScrollView, Platform, Modal
+    ScrollView, Platform, Modal, Alert
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Picker } from '@react-native-picker/picker';
 import { getStyle } from "./CadastroTelaStyle";
+import { listarClientes, salvarConsulta } from "../../services/firebaseService";
 
-const clientes = ['', 'Felipe', 'Arthur', 'Pietro'];
 const medicos = ['', 'Dr. Silva', 'Dr. Costa', 'Dra. Lima'];
 const especialidades = ['', 'Cardiologia', 'Ortopedia', 'Clínica Geral'];
 const opcaoCadastrarCliente = '__cadastro_cliente__';
@@ -42,7 +42,6 @@ function gerarStatusHorario(chave: string): StatusHorario {
     for (let i = 0; i < chave.length; i += 1) {
         hash = (hash * 31 + chave.charCodeAt(i)) % 100000;
     }
-
     const bucket = hash % 10;
     if (bucket <= 3) return 'L';
     if (bucket <= 5) return 'C';
@@ -61,6 +60,8 @@ type CadastroTelaProps = {
 export function CadastroTela({ darkMode = false, onVoltar, onConfirmar, onAbrirCadastroCliente }: CadastroTelaProps) {
     const styles = getStyle(darkMode);
 
+    const [clientesFirebase, setClientesFirebase] = useState<any[]>([]);
+
     const [cliente, setCliente] = useState('');
     const [telefone, setTelefone] = useState('');
     const [endereco, setEndereco] = useState('');
@@ -69,8 +70,37 @@ export function CadastroTela({ darkMode = false, onVoltar, onConfirmar, onAbrirC
     const [horarioSelecionado, setHorarioSelecionado] = useState<string | null>(null);
     const [semanaOffset, setSemanaOffset] = useState(0);
     const [customPickerAberto, setCustomPickerAberto] = useState<null | 'cliente' | 'medico' | 'especialidade'>(null);
+    
+    const [tipoConsulta, setTipoConsulta] = useState<'Consulta Normal' | 'Primeira Consulta' | 'Retorno'>('Consulta Normal');
 
     const isAndroid = Platform.OS === 'android';
+
+    useEffect(() => {
+        async function carregarPacientes() {
+            try {
+                const dados = await listarClientes();
+                setClientesFirebase(dados);
+            } catch (error) {
+                console.error("Erro ao buscar pacientes:", error);
+            }
+        }
+        carregarPacientes();
+    }, []);
+
+    // Proteção para não dar crash se o paciente não tiver telefone ou endereço
+    useEffect(() => {
+        if (!cliente) {
+            setTelefone('');
+            setEndereco('');
+            return;
+        }
+
+        const pacienteEncontrado = clientesFirebase.find(c => c.nome === cliente);
+        if (pacienteEncontrado) {
+            setTelefone(pacienteEncontrado.telefone || '');
+            setEndereco(pacienteEncontrado.endereco || '');
+        }
+    }, [cliente, clientesFirebase]);
 
     const agendaInicio = useMemo(() => {
         const hoje = new Date();
@@ -111,7 +141,6 @@ export function CadastroTela({ darkMode = false, onVoltar, onConfirmar, onAbrirC
 
     const semanaAtual = useMemo(() => {
         if (!agendaDisponivel) return [] as Date[];
-
         const inicioSemana = addDias(agendaInicio, semanaOffset * 7);
         const dias: Date[] = [];
         for (let i = 0; i < 7; i += 1) {
@@ -125,6 +154,34 @@ export function CadastroTela({ darkMode = false, onVoltar, onConfirmar, onAbrirC
     const podeVoltarSemana = agendaDisponivel && semanaOffset > 0;
     const podeAvancarSemana = agendaDisponivel && semanaOffset < totalSemanas - 1;
 
+    async function handleConfirmarAgendamento() {
+        if (!cliente || !medico || !horarioSelecionado) {
+            Alert.alert("Atenção", "Por favor, selecione um Cliente, um Médico e um Horário Livre na agenda.");
+            return;
+        }
+
+        const [,, stringHorario] = horarioSelecionado.split('|');
+
+        try {
+            await salvarConsulta({
+                pacienteNome: cliente,
+                telefone: telefone,
+                endereco: endereco,
+                medico: medico,
+                especialidade: especialidade,
+                horarioCompleto: horarioSelecionado,
+                horario: stringHorario,
+                tipo: tipoConsulta 
+            });
+
+            Alert.alert("Sucesso", "Consulta agendada e salva no banco!", [
+                { text: "OK", onPress: () => onConfirmar?.() }
+            ]);
+        } catch (error: any) {
+            Alert.alert("Erro ao salvar agendamento", error.message);
+        }
+    }
+
     return (
         <SafeAreaView style={styles.safeArea}>
             <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
@@ -136,7 +193,7 @@ export function CadastroTela({ darkMode = false, onVoltar, onConfirmar, onAbrirC
 
                 <Text style={styles.titulo}>Marcação de Consulta</Text>
 
-                {/* Cliente */}
+                {/* Cliente - Com proteção de null/undefined */}
                 <Text style={styles.label}>Cliente</Text>
                 {!isAndroid ? (
                     <TouchableOpacity style={styles.selectButton} onPress={() => setCustomPickerAberto('cliente')}>
@@ -158,8 +215,15 @@ export function CadastroTela({ darkMode = false, onVoltar, onConfirmar, onAbrirC
                             dropdownIconColor="#1a3c5e"
                             style={styles.pickerNative}
                         >
-                            {clientes.map(c => <Picker.Item key={c} label={c || 'Selecione o cliente'} value={c} />)}
-                            <Picker.Item label="+ Cadastrar cliente" value={opcaoCadastrarCliente} />
+                            <Picker.Item label="Selecione o cliente" value="" />
+                            {clientesFirebase.map(c => (
+                                <Picker.Item 
+                                    key={c.id} 
+                                    label={c.nome || "Sem Nome"} 
+                                    value={c.nome || "Sem Nome"} 
+                                />
+                            ))}
+                            <Picker.Item label="+ Cadastrar novo cliente" value={opcaoCadastrarCliente} />
                         </Picker>
                     </View>
                 )}
@@ -182,6 +246,21 @@ export function CadastroTela({ darkMode = false, onVoltar, onConfirmar, onAbrirC
                     value={endereco}
                     onChangeText={setEndereco}
                 />
+
+                {/* Classificação da Consulta */}
+                <Text style={styles.label}>Classificação da Consulta</Text>
+                <View style={styles.pickerWrapper}>
+                    <Picker
+                        selectedValue={tipoConsulta}
+                        onValueChange={(itemValue) => setTipoConsulta(itemValue)}
+                        dropdownIconColor="#1a3c5e"
+                        style={styles.pickerNative}
+                    >
+                        <Picker.Item label="Consulta Normal" value="Consulta Normal" />
+                        <Picker.Item label="Primeira Consulta" value="Primeira Consulta" />
+                        <Picker.Item label="Retorno" value="Retorno" />
+                    </Picker>
+                </View>
 
                 {/* Médico */}
                 <Text style={styles.label}>Médico</Text>
@@ -243,7 +322,7 @@ export function CadastroTela({ darkMode = false, onVoltar, onConfirmar, onAbrirC
                     <Text style={styles.legendaItem}>B = Bloqueado</Text>
                 </View>
 
-                <Text style={styles.label}>Horários da agenda</Text>
+                <Text style={styles.label}>Horários da agenda (Toque em um 'L')</Text>
                 <View style={styles.tabelaContainer}>
                     <View style={styles.tabelaHeader}>
                         <Text style={styles.colunaHorario}>Horário</Text>
@@ -285,17 +364,11 @@ export function CadastroTela({ darkMode = false, onVoltar, onConfirmar, onAbrirC
                                                                     : styles.slotBloqueado
                                             }
                                         >
-                                            {status}
+                                            {selecionado ? '✓' : status}
                                         </Text>
                                     </TouchableOpacity>
                                 );
                             })}
-                            {semanaAtual.length === 0 && (
-                                <Text style={styles.colunaDia}>--</Text>
-                            )}
-                            {semanaAtual.length > 0 && semanaAtual.length < 7 && Array.from({ length: 7 - semanaAtual.length }).map((_, idx) => (
-                                <Text key={`${h}-vazio-${idx}`} style={styles.colunaDia}> </Text>
-                            ))}
                         </View>
                     ))}
 
@@ -317,16 +390,15 @@ export function CadastroTela({ darkMode = false, onVoltar, onConfirmar, onAbrirC
                     </View>
                 </View>
 
-                {/* Botão Confirmar */}
-                <TouchableOpacity style={styles.btnConfirmar} onPress={onConfirmar}>
-                    <Text style={styles.btnConfirmarText}>Confirmar</Text>
+                <TouchableOpacity style={styles.btnConfirmar} onPress={handleConfirmarAgendamento}>
+                    <Text style={styles.btnConfirmarText}>Confirmar Agendamento</Text>
                 </TouchableOpacity>
             </ScrollView>
 
             <Modal visible={!isAndroid && customPickerAberto !== null} transparent animationType="fade" onRequestClose={() => setCustomPickerAberto(null)}>
                 <View style={styles.modalBackdrop}>
                     <View style={styles.modalCard}>
-                        {(customPickerAberto === 'cliente' ? [...clientes, opcaoCadastrarCliente] : customPickerAberto === 'medico' ? medicos : especialidades)
+                        {(customPickerAberto === 'cliente' ? [...clientesFirebase.map(c => c.nome || "Sem Nome"), opcaoCadastrarCliente] : customPickerAberto === 'medico' ? medicos : especialidades)
                             .filter(item => item !== '')
                             .map(item => (
                                 <TouchableOpacity
