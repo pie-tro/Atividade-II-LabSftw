@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View, Alert } from 'react-native';
-import { getStyle } from './CadastroMedicoStyle'; // <--- Importando de forma limpa da mesma pasta
+import { getStyle } from './CadastroMedicoStyle';
 import { adicionarMedico, listarMedicos, deletarMedico } from '../../services/firebaseService';
 
 export function CadastroMedicoTela({ darkMode = false }: any) {
