@@ -1,13 +1,13 @@
+
 import { StyleSheet } from 'react-native';
 
 export const getStyle = (darkMode = false) => {
     const background = darkMode ? '#111827' : '#f0f4f8';
     const surface = darkMode ? '#1f2937' : '#ffffff';
     const border = darkMode ? '#374151' : '#e5e7eb';
-    const textPrimary = darkMode ? '#f3f4f6' : '#111827';
-    const textSecondary = darkMode ? '#9ca3af' : '#4b5563';
+    const textPrimary = darkMode ? '#f3f4f6' : '#1a3c5e';
+    const textSecondary = darkMode ? '#d1d5db' : '#555';
     
-  
     const bgExcluir = darkMode ? '#7f1d1d' : '#fee2e2';
     const textExcluir = darkMode ? '#fca5a5' : '#dc2626';
 
@@ -23,7 +23,7 @@ export const getStyle = (darkMode = false) => {
             paddingBottom: 40,
         },
         titulo: {
-            fontSize: 24,
+            fontSize: 22,
             fontWeight: 'bold',
             color: textPrimary,
             marginBottom: 24,
@@ -54,12 +54,12 @@ export const getStyle = (darkMode = false) => {
             borderRadius: 10,
             paddingHorizontal: 14,
             paddingVertical: 12,
-            fontSize: 16,
-            color: textPrimary,
+            fontSize: 15,
+            color: darkMode ? '#e5e7eb' : '#222',
         },
         btnSalvar: {
             backgroundColor: '#1a3c5e',
-            borderRadius: 10,
+            borderRadius: 12,
             paddingVertical: 16,
             alignItems: 'center',
             marginTop: 8,
@@ -70,7 +70,7 @@ export const getStyle = (darkMode = false) => {
             fontWeight: 'bold',
             letterSpacing: 0.5,
         },
-  
+       
         card: {
             backgroundColor: surface,
             borderRadius: 12,
@@ -85,7 +85,7 @@ export const getStyle = (darkMode = false) => {
             shadowOffset: { width: 0, height: 2 },
             shadowOpacity: 0.05,
             shadowRadius: 4,
-            elevation: 2, // Sombra no Android
+            elevation: 2,
         },
         cardInfo: {
             flex: 1,

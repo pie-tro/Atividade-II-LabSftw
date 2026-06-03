@@ -4,13 +4,15 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { CadastroTela } from './screens/AgendarConsulta/CadastroTela';
 import { ConfirmacaoTela } from './screens/CofirmConsul/ConfirmaConsulta';
 import { CadastroClienteTela } from './screens/CadastroCliente/CadastroClienteTela';
+import { CadastroMedicoTela } from './screens/CadastroMedico/CadastroMedico';
 import { EncerramentoConsultaTela } from './screens/EncerrarConsulta/EncerrarConsulta';
 import { HistoricoTela } from './screens/HistoricoConsulta/HistoricoTela';
 import { LoginTela } from './screens/Login/Login';
 import { RealizaConsultaTela } from './screens/RealizaConsulta/RealizaConsulta';
 
 export default function App() {
-  const [telaAtual, setTelaAtual] = useState<'login' | 'agendarConsulta' | 'confirmConsul' | 'cadastroCliente' | 'encerrarConsulta' | 'historicoConsulta' | 'realizaConsulta'>('login');
+
+  const [telaAtual, setTelaAtual] = useState<'login' | 'agendarConsulta' | 'confirmConsul' | 'cadastroCliente' | 'cadastroMedico' | 'encerrarConsulta' | 'historicoConsulta' | 'realizaConsulta'>('login');
   const [darkMode, setDarkMode] = useState(false);
 
   function voltarTela() {
@@ -18,6 +20,7 @@ export default function App() {
     if (telaAtual === 'confirmConsul') setTelaAtual('agendarConsulta');
     if (telaAtual === 'historicoConsulta') setTelaAtual('confirmConsul');
     if (telaAtual === 'cadastroCliente') setTelaAtual('agendarConsulta');
+    if (telaAtual === 'cadastroMedico') setTelaAtual('agendarConsulta'); 
     if (telaAtual === 'encerrarConsulta') setTelaAtual('login');
     if (telaAtual === 'realizaConsulta') setTelaAtual('login');
   }
@@ -52,6 +55,8 @@ export default function App() {
           />
         ) : telaAtual === 'cadastroCliente' ? (
           <CadastroClienteTela darkMode={darkMode} />
+        ) : telaAtual === 'cadastroMedico' ? ( 
+          <CadastroMedicoTela darkMode={darkMode} />
         ) : telaAtual === 'realizaConsulta' ? (
           <RealizaConsultaTela darkMode={darkMode} />
         ) : telaAtual === 'encerrarConsulta' ? (
@@ -63,6 +68,7 @@ export default function App() {
             darkMode={darkMode}
             onConfirmar={() => setTelaAtual('confirmConsul')}
             onAbrirCadastroCliente={() => setTelaAtual('cadastroCliente')}
+            onAbrirCadastroMedico={() => setTelaAtual('cadastroMedico')} 
           />
         ) : (
           <ConfirmacaoTela

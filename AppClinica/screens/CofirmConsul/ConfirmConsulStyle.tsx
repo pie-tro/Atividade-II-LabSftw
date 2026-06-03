@@ -36,7 +36,7 @@ export const getStyle = (darkMode = false) => {
             textTransform: 'capitalize',
         },
 
-        // Resumo
+    
         resumoRow: {
             flexDirection: 'row',
             gap: 10,
@@ -75,7 +75,7 @@ export const getStyle = (darkMode = false) => {
             letterSpacing: 0.4,
         },
 
-        // Seções
+   
         secaoTitulo: {
             fontSize: 13,
             fontWeight: '600',
@@ -86,7 +86,7 @@ export const getStyle = (darkMode = false) => {
             letterSpacing: 0.5,
         },
 
-        // Cards de consulta
+
         card: {
             backgroundColor: surface,
             borderRadius: 12,
@@ -144,7 +144,7 @@ export const getStyle = (darkMode = false) => {
             marginTop: 14,
         },
 
-        // Badges de status
+  
         badgePendente: {
             backgroundColor: '#fffaeb',
             borderRadius: 20,
@@ -175,7 +175,7 @@ export const getStyle = (darkMode = false) => {
             color: darkMode ? '#111827' : '#1a3c5e',
         },
 
-        // Botões de ação nos cards
+      
         btnAcao: {
             flex: 1,
             borderRadius: 8,
@@ -194,7 +194,7 @@ export const getStyle = (darkMode = false) => {
             fontWeight: '700',
         },
 
-        // Estado vazio
+  
         vazioContainer: {
             backgroundColor: surface,
             borderRadius: 12,
@@ -210,7 +210,7 @@ export const getStyle = (darkMode = false) => {
             textAlign: 'center',
         },
 
-        // Modal
+ 
         modalBackdrop: {
             flex: 1,
             backgroundColor: 'rgba(0, 0, 0, 0.35)',

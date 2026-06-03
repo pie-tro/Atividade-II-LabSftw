@@ -55,3 +55,26 @@ export const salvarConsulta = async (dados: any) => {
     criadoEm: serverTimestamp(),
   });
 };
+
+const colecaoMedicos = 'medicos';
+
+
+export const adicionarMedico = async (dados: { nome: string; telefone: string; especialidade: string }) => {
+  return await addDoc(collection(db, colecaoMedicos), {
+    ...dados,
+    criadoEm: serverTimestamp(),
+  });
+};
+
+
+export const listarMedicos = async () => {
+    const q = query(collection(db, colecaoMedicos), orderBy("nome", "asc"));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+};
+
+
+export const deletarMedico = async (id: string) => {
+  const docRef = doc(db, colecaoMedicos, id);
+  return await deleteDoc(docRef);
+};
