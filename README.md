@@ -5,7 +5,9 @@ Pietro Maia Fernandes
 
 DEPENDENCIAS NECESSÁRIAS PARA O FUNCIONAMENTO DO APP:
 npm install
+
 npx expo install react-native-safe-area-context
+
 npx expo install @react-native-picker/picker
 
 FLUXO DO APP PARA TESTES:
